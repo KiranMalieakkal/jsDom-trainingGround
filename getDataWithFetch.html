@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            background-color: #262626;
+        }
+        .search{
+            display:flex;
+            flex-direction: column;
+            width: 200px;
+            height: 50px;
+            justify-content: space-evenly;
+
+
+        }
+        .usershow{
+
+        }
+        .userhide{
+            display: none;
+        }
+        #heading
+        {
+        color: white;
+        text-align: center;
+        background-color: red;
+        }
+        #inputText{
+            width: 300px;
+        }
+        .container{
+            display:flex;
+            flex-wrap: wrap;
+            
+
+
+        }
+    </style>
+
+</head>
+<body>
+    <h3 id="heading">RANDOM GIRLS GENERATOR</h3>
+    <div>
+            <input type="text" id="inputText" placeholder="Enter the name you want to search" >
+            <button type="button" id="submitButton">Enter</button>
+    </div>
+    <main class="container">
+    </main>
+    
+</body>
+<script>
+    function createList(data){
+        const main = document.querySelector('main');
+        const userlist = document.createElement('div');
+        userlist.classList.add('container');
+        for(let i=0;i<data.results.length;i++){
+            const userdiv= document.createElement('div');
+            const header= document.createElement('h2');
+            const image= document.createElement('img');
+            header.textContent=data.results[i].name.first;
+            header.style.color="red";
+            header.style.textAlign='center';
+            image.src=data.results[i].picture.large;
+            userdiv.appendChild(header);
+            userdiv.appendChild(image);
+            userdiv.classList.add("usershow");
+            userlist.appendChild(userdiv);
+        }
+        return userlist;
+    }
+    function filter(inputvalue){
+        // This is done at first so that everytime you press the button all elements are added to the usershow so that now depending on the input 
+        //we can filter the values. This comes into picture after the first search
+        const elementlist = document.querySelectorAll('.userhide');
+        console.log(elementlist)
+        elementlist.forEach((element) =>{
+
+               element.classList.remove('userhide');
+                element.classList.add('usershow');
+            }
+            
+        )
+        // if the input box is empty then it should show everyone
+        if (inputvalue==""){
+        const elementlist = document.querySelectorAll('.userhide');
+        console.log(elementlist)
+        elementlist.forEach((element) =>{
+
+               element.classList.remove('userhide');
+                element.classList.add('usershow');
+            }
+            
+        )
+
+        }
+        // first select all the elements with the class as'usershow'. This will give a nodelist[50] of 50 divs. 
+        //Now we go through each element in the nodelist (which is each div) using foreach() method and then select
+        // the headers and check the innerHtml value against the input value, if the name doesnt contain the inputvalues we add the div to the userhide class to hide the div
+        else{
+        const elementlist = document.querySelectorAll('.usershow');
+        console.log(elementlist);
+        elementlist.forEach((element) =>{
+            console.log(element);
+            const h2 = element.querySelector('h2');
+                if(!h2.textContent.includes(inputvalue)){
+                
+                    console.log(name);
+                element.classList.remove('usershow');
+                    element.classList.add('userhide');
+                    }
+            
+        });
+    }
+
+    }
+    function handleButtonClick(){
+        console.log("hi");
+        const inputvalue = document.getElementById('inputText').value;
+        console.log(inputvalue);
+        filter(inputvalue);
+
+    }
+
+    function getUsers(element) {
+        fetch("https://randomuser.me/api/?gender=female&results=50")
+        .then((response) => response.json())
+        .then((data) => {
+            //element.textContent=data.results.length;
+            console.log({ data });
+            element.appendChild(createList(data));
+        
+        
+            }
+        );
+        
+    }
+    document.addEventListener('DOMContentLoaded',()=>{
+        const mainElement= document.querySelector('main');
+        getUsers(mainElement);
+    })
+    const button = document.getElementById('submitButton');
+    console.log(button);
+    button.addEventListener("click", handleButtonClick);
+</script>   
+</html>
